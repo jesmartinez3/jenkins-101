@@ -2,8 +2,8 @@ pipeline {
     agent { 
         node {
             label 'docker-agent-python'
-            }
-      }
+        }
+    }
     triggers {
         pollSCM '* * * * *'
     }
@@ -13,6 +13,8 @@ pipeline {
                 echo "Building.."
                 sh '''
                 cd myapp
+                python3 -m venv venv
+                source venv/bin/activate
                 pip install -r requirements.txt
                 '''
             }
@@ -22,6 +24,7 @@ pipeline {
                 echo "Testing.."
                 sh '''
                 cd myapp
+                source venv/bin/activate
                 python3 hello.py
                 python3 hello.py --name=Brad
                 '''
@@ -31,6 +34,8 @@ pipeline {
             steps {
                 echo 'Deliver....'
                 sh '''
+                cd myapp
+                source venv/bin/activate
                 echo "doing delivery stuff.."
                 '''
             }
